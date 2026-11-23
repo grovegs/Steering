@@ -25,6 +25,10 @@ public sealed class ContextSteering : IContextSteering
     public bool IsRecording => _isRecording;
     public IReadOnlyList<ContextSteeringSnapshot> Snapshots => _snapshots;
 
+    public ContextSteering(IContextSteeringSettings settings) : this(GetSlotCount(settings), settings.InterestSpread, settings.DangerTolerance, settings.InterestHalfLife)
+    {
+    }
+
     public ContextSteering(int slotCount, float interestSpread, float dangerTolerance, float interestHalfLife)
     {
         _interest = new ContextMap(slotCount, interestSpread);
@@ -121,6 +125,13 @@ public sealed class ContextSteering : IContextSteering
         }
 
         return _snapshots[agentId];
+    }
+
+    private static int GetSlotCount(IContextSteeringSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
+        return settings.SlotCount;
     }
 
     private void GetPeak(int slot, float maximumDanger, out float offset, out float amplitude)

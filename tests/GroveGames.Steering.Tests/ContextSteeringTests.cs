@@ -222,4 +222,17 @@ public sealed class ContextSteeringTests
 
         Assert.True((direction - Vector2.UnitY).Length() < Tolerance);
     }
+
+    [Fact]
+    public void Constructor_Settings_UsesTheirValues()
+    {
+        var settings = new ContextSteeringSettings(12, 0.5f, 0.2f, 0.3f);
+
+        var steering = new ContextSteering(settings);
+
+        Assert.Equal(12, steering.Interest.SlotCount);
+        Assert.Equal(12, steering.Danger.SlotCount);
+        Assert.Equal(0.3f, steering.InterestHalfLife);
+        Assert.Equal(0.2f, steering.MaximumDanger);
+    }
 }

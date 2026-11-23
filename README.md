@@ -9,12 +9,13 @@ Context steering that picks a movement direction from interest and danger maps, 
 
 ## Features
 
+- `IContextSteeringSettings`: slot count, interest spread, danger tolerance and interest half-life, with `ContextSteeringSettings` as the plain implementation
 - `ContextSteering`: an interest map and a danger map over evenly spaced directions, and the best open direction between them
 - `ContextSteeringAgent`: one per moving thing; it runs the behaviours, blends interest over time so the direction does not flicker, and records what it decided
 - `SeekBehaviour` and `AvoidBehaviour`, and `IContextBehaviour` for your own
 - `ContextSteeringSnapshot`: the maps and points of one decision, for drawing them
 - Everything is on `System.Numerics.Vector2` and allocates nothing per frame
-- Unity: a settings asset and a debug drawer for the developer tools
+- Unity: `UnityContextSteeringSettings`, the same settings as an asset, and a debug drawer for the developer tools
 
 ## .NET
 
@@ -30,7 +31,8 @@ dotnet add package GroveGames.Steering
 using System.Numerics;
 using GroveGames.Steering;
 
-var steering = new ContextSteering(slotCount: 16, interestSpread: 1f, dangerTolerance: 0.1f, interestHalfLife: 0.05f);
+var settings = new ContextSteeringSettings(slotCount: 16, interestSpread: 1f, dangerTolerance: 0.1f, interestHalfLife: 0.05f);
+var steering = new ContextSteering(settings);
 var seek = new SeekBehaviour();
 var avoid = new AvoidBehaviour();
 var agent = new ContextSteeringAgent(id: 0, steering, new IContextBehaviour[] { seek, avoid });
@@ -77,6 +79,12 @@ Create the settings with Assets > Create > GroveGames > Steering > Context Steer
 using GroveGames.Steering.Unity;
 
 builder.AddContextSteering(_contextSteeringSettings);
+```
+
+`_contextSteeringSettings` is a `UnityContextSteeringSettings`. It implements `IContextSteeringSettings`, so the core takes it as it is:
+
+```csharp
+var steering = new ContextSteering(_contextSteeringSettings);
 ```
 
 - Positions and directions are `System.Numerics.Vector2`. Convert at the edge: `new System.Numerics.Vector2(position.x, position.y)` going in, `new Vector2(direction.X, direction.Y)` coming out.
