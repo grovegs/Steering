@@ -1,0 +1,26 @@
+{
+    "name": "GroveGames.Steering.Unity.DependencyInjection",
+    "rootNamespace": "GroveGames.Steering.Unity",
+    "references": [
+        "GroveGames.Steering.Unity",
+        "GroveGames.Steering.Unity.DeveloperTools",
+        "GroveGames.DependencyInjection.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "GROVEGAMES_DEPENDENCYINJECTION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.grovegames.dependencyinjection",
+            "expression": "0.6.0",
+            "define": "GROVEGAMES_DEPENDENCYINJECTION"
+        }
+    ],
+    "noEngineReferences": false
+}

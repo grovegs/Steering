@@ -1,0 +1,20 @@
+{
+  "name": "com.grovegames.steering",
+  "version": "0.0.0",
+  "displayName": "GroveGames.Steering",
+  "description": "Context steering that picks a movement direction from interest and danger maps, for .NET and Unity",
+  "unity": "6000.3",
+  "documentationUrl": "https://github.com/grovegs/Steering",
+  "changelogUrl": "https://github.com/grovegs/Steering/releases",
+  "licensesUrl": "https://github.com/grovegs/Steering/blob/main/LICENSE",
+  "keywords": [
+    "steering",
+    "context-steering",
+    "ai",
+    "movement"
+  ],
+  "author": {
+    "name": "Grove Games",
+    "url": "https://github.com/grovegs"
+  }
+}

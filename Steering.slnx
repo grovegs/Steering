@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src\GroveGames.Steering\GroveGames.Steering.csproj" />
+  <Project Path="tests\GroveGames.Steering.Tests\GroveGames.Steering.Tests.csproj" />
+</Solution>

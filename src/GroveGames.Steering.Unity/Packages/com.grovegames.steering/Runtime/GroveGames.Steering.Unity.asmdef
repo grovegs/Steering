@@ -1,0 +1,16 @@
+{
+    "name": "GroveGames.Steering.Unity",
+    "rootNamespace": "GroveGames.Steering.Unity",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "GroveGames.Steering.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
