@@ -4,10 +4,11 @@ namespace GroveGames.Steering.Unity
 {
     public static class SteeringContainerBuilderExtensions
     {
-        public static IContainerBuilder AddContextSteering(this IContainerBuilder builder, ContextSteeringSettings settings)
+        public static IContainerBuilder AddContextSteering(this IContainerBuilder builder, UnityContextSteeringSettings settings)
         {
             builder.AddSingleton(settings);
-            builder.AddSingleton<IContextSteering>(_ => new ContextSteering(settings.SlotCount, settings.InterestSpread, settings.DangerTolerance, settings.InterestHalfLife));
+            builder.AddSingleton<IContextSteeringSettings>(settings);
+            builder.AddSingleton<IContextSteering>(_ => new ContextSteering(settings));
 #if GROVEGAMES_DEVELOPERTOOLS
             builder.AddContextSteeringDeveloperOptions();
 #endif

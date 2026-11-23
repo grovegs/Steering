@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 namespace GroveGames.Steering.Unity
 {
     [CreateAssetMenu(menuName = "GroveGames/Steering/Context Steering Settings", fileName = "ContextSteeringSettings")]
-    public sealed class ContextSteeringSettings : ScriptableObject
+    public sealed class UnityContextSteeringSettings : ScriptableObject, IContextSteeringSettings
     {
         [Header("Slots")]
         [SerializeField, Range(4, 64), FormerlySerializedAs("_directionCount")] private int _slotCount = 16;
