@@ -38,7 +38,7 @@ var agent = new ContextSteeringAgent(id: 0, steering, new IContextBehaviour[] { 
 seek.SetDirection(target - position, strength: 1f);
 avoid.SetObstacles(obstacles, obstacleCount, radius: 2f);
 
-var direction = agent.SelectDirection(position, frame);
+var direction = agent.SelectDirection(position);
 agent.Commit();
 agent.CompleteFrame(deltaTime);
 ```
@@ -46,7 +46,7 @@ agent.CompleteFrame(deltaTime);
 - One `ContextSteering` is shared by all agents. Each agent clears it, writes into it and reads its answer inside `SelectDirection`.
 - `SelectDirection` returns a unit direction, or zero when no open direction has interest.
 - Call `Commit` when the agent really moves in the selected direction, and `CompleteFrame` once per frame for every agent. Only committed interest is blended into the next frame.
-- `frame` is the number of the current frame. It only labels the snapshot, so a drawer can show the decisions of this frame.
+- While `SetRecording(true)` is on, each agent fills its `ContextSteeringSnapshot`. Whoever draws a snapshot checks `IsRecorded` and calls `Clear()` afterwards, so a decision is drawn once.
 - `Reset` forgets the blended interest, for an agent that is reused.
 
 ## Unity
@@ -80,7 +80,6 @@ builder.AddContextSteering(_contextSteeringSettings);
 ```
 
 - Positions and directions are `System.Numerics.Vector2`. Convert at the edge: `new System.Numerics.Vector2(position.x, position.y)` going in, `new Vector2(direction.X, direction.Y)` coming out.
-- Pass `Time.frameCount` as the frame.
 - With [GroveGames.DeveloperTools](https://github.com/grovegs/DeveloperTools) installed, the Steering options have a "Show Maps" toggle that draws every agent's maps in the scene.
 
 ## Development

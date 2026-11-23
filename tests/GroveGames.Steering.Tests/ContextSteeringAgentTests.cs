@@ -4,7 +4,6 @@ namespace GroveGames.Steering.Tests;
 
 public sealed class ContextSteeringAgentTests
 {
-    private const int Frame = 42;
     private const int AgentId = 0;
     private const int OtherAgentId = 2;
     private const int SlotCount = 16;
@@ -29,7 +28,7 @@ public sealed class ContextSteeringAgentTests
     {
         _seek.SetDirection(Vector2.UnitY, 1f);
 
-        var direction = _agent.SelectDirection(Vector2.Zero, Frame);
+        var direction = _agent.SelectDirection(Vector2.Zero);
 
         Assert.True((direction - Vector2.UnitY).Length() < Tolerance);
         Assert.Equal(1f, _agent.GetInterest(direction), Tolerance);
@@ -41,7 +40,7 @@ public sealed class ContextSteeringAgentTests
         _seek.SetDirection(Vector2.UnitY, 1f);
         _avoid.SetObstacles(new[] { new Vector2(0f, 0.5f) }, 1, 2f);
 
-        var direction = _agent.SelectDirection(Vector2.Zero, Frame);
+        var direction = _agent.SelectDirection(Vector2.Zero);
 
         Assert.True(Math.Abs(direction.X) > 0.9f);
         Assert.True(_agent.GetInterest(direction) < 0.6f);
@@ -52,10 +51,10 @@ public sealed class ContextSteeringAgentTests
     {
         _seek.SetDirection(Vector2.UnitY, 1f);
         _avoid.SetObstacles(new[] { new Vector2(0f, 0.5f) }, 1, 2f);
-        _agent.SelectDirection(Vector2.Zero, Frame);
+        _agent.SelectDirection(Vector2.Zero);
         _avoid.SetObstacles(new[] { new Vector2(0f, 0.5f) }, 0, 2f);
 
-        var direction = _agent.SelectDirection(Vector2.Zero, Frame);
+        var direction = _agent.SelectDirection(Vector2.Zero);
 
         Assert.True((direction - Vector2.UnitY).Length() < Tolerance);
     }
@@ -63,7 +62,7 @@ public sealed class ContextSteeringAgentTests
     [Fact]
     public void SelectDirection_NoInterest_ReturnsZero()
     {
-        var direction = _agent.SelectDirection(Vector2.Zero, Frame);
+        var direction = _agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(Vector2.Zero, direction);
     }
@@ -73,7 +72,7 @@ public sealed class ContextSteeringAgentTests
     {
         _seek.SetDirection(Vector2.UnitY, 1f);
 
-        _agent.SelectDirection(Vector2.Zero, Frame);
+        _agent.SelectDirection(Vector2.Zero);
 
         Assert.Empty(_steering.Snapshots);
     }
@@ -88,11 +87,11 @@ public sealed class ContextSteeringAgentTests
         _seek.SetPoint(point);
         _avoid.SetObstacles(new[] { obstacle }, 1, 2f);
 
-        var direction = _agent.SelectDirection(Vector2.One, Frame);
+        var direction = _agent.SelectDirection(Vector2.One);
 
         var snapshot = _steering.Snapshots[AgentId];
         var upSlot = _steering.Interest.GetNearestSlot(Vector2.UnitY);
-        Assert.Equal(Frame, snapshot.Frame);
+        Assert.True(snapshot.IsRecorded);
         Assert.Equal(Vector2.One, snapshot.Position);
         Assert.Equal(direction, snapshot.Direction);
         Assert.Equal(SlotCount, snapshot.SlotCount);
@@ -109,7 +108,7 @@ public sealed class ContextSteeringAgentTests
         _seek.SetDirection(Vector2.UnitY, 1f);
         _avoid.SetObstacles(new[] { new Vector2(5f, 0f) }, 1, 2f);
 
-        _agent.SelectDirection(Vector2.Zero, Frame);
+        _agent.SelectDirection(Vector2.Zero);
 
         Assert.Empty(_steering.Snapshots[AgentId].DangerPoints);
     }
@@ -121,7 +120,7 @@ public sealed class ContextSteeringAgentTests
         _seek.SetDirection(Vector2.UnitY, 1f);
         _avoid.SetObstacles(new[] { new Vector2(0f, 0.5f) }, 1, 2f);
 
-        _agent.SelectDirection(Vector2.Zero, Frame);
+        _agent.SelectDirection(Vector2.Zero);
 
         var snapshot = _steering.Snapshots[AgentId];
         Assert.True(snapshot.IsBlocked(_steering.Interest.GetNearestSlot(Vector2.UnitY)));
@@ -137,18 +136,18 @@ public sealed class ContextSteeringAgentTests
         var first = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { up, right });
         var second = new ContextSteeringAgent(OtherAgentId, steering, new IContextBehaviour[] { up, right });
         up.SetDirection(Vector2.UnitY, 1f);
-        first.SelectDirection(Vector2.Zero, Frame);
+        first.SelectDirection(Vector2.Zero);
         first.Commit();
         up.SetDirection(Vector2.UnitY, 0f);
         right.SetDirection(Vector2.UnitX, 1f);
-        second.SelectDirection(Vector2.Zero, Frame);
+        second.SelectDirection(Vector2.Zero);
         second.Commit();
         first.CompleteFrame(HalfLife);
         second.CompleteFrame(HalfLife);
         up.SetDirection(Vector2.UnitY, 0.97f);
 
-        var firstDirection = first.SelectDirection(Vector2.Zero, Frame);
-        var secondDirection = second.SelectDirection(Vector2.Zero, Frame);
+        var firstDirection = first.SelectDirection(Vector2.Zero);
+        var secondDirection = second.SelectDirection(Vector2.Zero);
 
         Assert.Equal(steering.Interest.GetNearestSlot(Vector2.UnitY), steering.Interest.GetNearestSlot(firstDirection));
         Assert.Equal(steering.Interest.GetNearestSlot(Vector2.UnitX), steering.Interest.GetNearestSlot(secondDirection));
@@ -161,14 +160,14 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.Commit();
         agent.CompleteFrame(HalfLife);
         seek.SetDirection(-Vector2.UnitX, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         seek.SetDirection(Vector2.UnitX, 1f);
 
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(0.5f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
         Assert.Equal(0f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(-Vector2.UnitX)), Tolerance);
@@ -181,12 +180,12 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.Commit();
         agent.CompleteFrame(HalfLife);
         seek.SetDirection(Vector2.UnitX, 1f);
 
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(0.5f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
     }
@@ -198,11 +197,11 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.CompleteFrame(HalfLife);
         seek.SetDirection(Vector2.UnitX, 1f);
 
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(0f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
     }
@@ -214,13 +213,13 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.Commit();
         agent.CompleteFrame(HalfLife);
         agent.CompleteFrame(HalfLife);
         seek.SetDirection(Vector2.UnitX, 1f);
 
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(0f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
     }
@@ -232,12 +231,12 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.Commit();
         agent.CompleteFrame(0f);
         seek.SetDirection(Vector2.UnitX, 1f);
 
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(1f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
     }
@@ -249,12 +248,12 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.Commit();
         agent.CompleteFrame(HalfLife);
         seek.SetDirection(Vector2.UnitX, 1f);
 
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(0f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
     }
@@ -266,12 +265,12 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.Commit();
         agent.CompleteFrame(HalfLife * 2f);
         seek.SetDirection(Vector2.UnitX, 1f);
 
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(0.25f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
     }
@@ -283,13 +282,13 @@ public sealed class ContextSteeringAgentTests
         var seek = new SeekBehaviour();
         var agent = new ContextSteeringAgent(AgentId, steering, new IContextBehaviour[] { seek });
         seek.SetDirection(Vector2.UnitY, 1f);
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
         agent.Commit();
         agent.CompleteFrame(HalfLife);
         seek.SetDirection(Vector2.UnitX, 1f);
 
         agent.Reset();
-        agent.SelectDirection(Vector2.Zero, Frame);
+        agent.SelectDirection(Vector2.Zero);
 
         Assert.Equal(0f, steering.Interest.GetValue(steering.Interest.GetNearestSlot(Vector2.UnitY)), Tolerance);
     }
@@ -300,8 +299,8 @@ public sealed class ContextSteeringAgentTests
         _steering.SetRecording(true);
         _seek.SetDirection(Vector2.UnitY, 1f);
 
-        _agent.SelectDirection(Vector2.Zero, Frame);
-        new ContextSteeringAgent(OtherAgentId, _steering, new IContextBehaviour[] { _seek, _avoid }).SelectDirection(Vector2.One, Frame);
+        _agent.SelectDirection(Vector2.Zero);
+        new ContextSteeringAgent(OtherAgentId, _steering, new IContextBehaviour[] { _seek, _avoid }).SelectDirection(Vector2.One);
 
         Assert.Equal(Vector2.Zero, _steering.Snapshots[AgentId].Position);
         Assert.Equal(Vector2.One, _steering.Snapshots[OtherAgentId].Position);

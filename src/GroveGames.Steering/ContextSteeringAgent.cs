@@ -26,7 +26,7 @@ public sealed class ContextSteeringAgent
         _usedInterest = new float[steering.Interest.SlotCount];
     }
 
-    public Vector2 SelectDirection(Vector2 position, int frame)
+    public Vector2 SelectDirection(Vector2 position)
     {
         _steering.Clear();
 
@@ -46,7 +46,7 @@ public sealed class ContextSteeringAgent
 
         if (_steering.IsRecording)
         {
-            Record(position, direction, frame);
+            Record(position, direction);
         }
 
         return direction;
@@ -89,10 +89,10 @@ public sealed class ContextSteeringAgent
         return _steering.GetInterest(direction);
     }
 
-    private void Record(Vector2 position, Vector2 direction, int frame)
+    private void Record(Vector2 position, Vector2 direction)
     {
         var snapshot = _steering.GetSnapshot(_id);
-        snapshot.Record(_steering, position, direction, frame);
+        snapshot.Record(_steering, position, direction);
 
         for (var i = 0; i < _behaviours.Length; i++)
         {

@@ -59,9 +59,10 @@ namespace GroveGames.Steering.Unity
 
             for (var i = 0; i < snapshots.Count; i++)
             {
-                if (snapshots[i].Frame == Time.frameCount)
+                if (snapshots[i].IsRecorded)
                 {
                     Draw(snapshots[i]);
+                    snapshots[i].Clear();
                 }
             }
 

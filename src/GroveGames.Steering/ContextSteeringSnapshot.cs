@@ -12,12 +12,12 @@ public sealed class ContextSteeringSnapshot
     private Vector2 _position;
     private Vector2 _direction;
     private float _maximumDanger;
-    private int _frame;
+    private bool _isRecorded;
 
     public int SlotCount => _interest.Length;
     public Vector2 Position => _position;
     public Vector2 Direction => _direction;
-    public int Frame => _frame;
+    public bool IsRecorded => _isRecorded;
     public IReadOnlyList<Vector2> InterestPoints => _interestPoints;
     public IReadOnlyList<Vector2> DangerPoints => _dangerPoints;
 
@@ -27,7 +27,6 @@ public sealed class ContextSteeringSnapshot
         _danger = new float[slotCount];
         _interestPoints = new List<Vector2>();
         _dangerPoints = new List<Vector2>();
-        _frame = -1;
     }
 
     public float GetInterest(int slot)
@@ -45,11 +44,11 @@ public sealed class ContextSteeringSnapshot
         return _danger[slot] > _maximumDanger;
     }
 
-    public void Record(IContextSteering steering, Vector2 position, Vector2 direction, int frame)
+    public void Record(IContextSteering steering, Vector2 position, Vector2 direction)
     {
         _position = position;
         _direction = direction;
-        _frame = frame;
+        _isRecorded = true;
         _maximumDanger = steering.MaximumDanger;
         _interestPoints.Clear();
         _dangerPoints.Clear();
@@ -59,6 +58,13 @@ public sealed class ContextSteeringSnapshot
             _interest[i] = steering.Interest.GetValue(i);
             _danger[i] = steering.Danger.GetValue(i);
         }
+    }
+
+    public void Clear()
+    {
+        _isRecorded = false;
+        _interestPoints.Clear();
+        _dangerPoints.Clear();
     }
 
     public void AddInterestPoint(Vector2 point)
