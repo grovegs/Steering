@@ -45,7 +45,7 @@ namespace GroveGames.Steering.Unity
             _triangles = new List<int>(InitialVertexCapacity);
         }
 
-        public void PostFrameUpdate(float deltaTime)
+        public void PostFrameUpdate(DeltaTime deltaTime)
         {
             if (!_isVisible || _mesh == null)
             {
