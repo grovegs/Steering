@@ -37,8 +37,8 @@ public sealed class ContextSteering : IContextSteering
         _interestHalfLife = Math.Max(0f, interestHalfLife);
         var slotAngle = MathF.PI * 2f / _interest.SlotCount;
         _halfSlotAngle = slotAngle * 0.5f;
-        _halfSlotTangent = (float)Math.Tan(_halfSlotAngle);
-        _slotCurvature = 1f - (float)Math.Cos(slotAngle);
+        _halfSlotTangent = MathF.Tan(_halfSlotAngle);
+        _slotCurvature = 1f - MathF.Cos(slotAngle);
         _snapshots = new List<ContextSteeringSnapshot>();
     }
 
@@ -72,8 +72,8 @@ public sealed class ContextSteering : IContextSteering
 
         GetPeak(best, maximumDanger, out var peakOffset, out _);
         var offset = Math.Clamp(peakOffset, -_halfSlotAngle, _halfSlotAngle);
-        var cosine = (float)Math.Cos(offset);
-        var sine = (float)Math.Sin(offset);
+        var cosine = MathF.Cos(offset);
+        var sine = MathF.Sin(offset);
         var slot = _interest.GetDirection(best);
         return new Vector2(slot.X * cosine - slot.Y * sine, slot.X * sine + slot.Y * cosine);
     }
@@ -96,12 +96,12 @@ public sealed class ContextSteering : IContextSteering
 
         GetPeak(nearest, maximumDanger, out var peakOffset, out var amplitude);
         var slot = _interest.GetDirection(nearest);
-        var offset = (float)Math.Atan2(slot.X * normalized.Y - slot.Y * normalized.X, Vector2.Dot(slot, normalized));
+        var offset = MathF.Atan2(slot.X * normalized.Y - slot.Y * normalized.X, Vector2.Dot(slot, normalized));
         var interest = _interest.GetValue(nearest);
 
         if (amplitude > 0f)
         {
-            interest += amplitude * ((float)Math.Cos(offset - peakOffset) - (float)Math.Cos(peakOffset));
+            interest += amplitude * (MathF.Cos(offset - peakOffset) - MathF.Cos(peakOffset));
         }
         else
         {
@@ -149,11 +149,11 @@ public sealed class ContextSteering : IContextSteering
             return;
         }
 
-        offset = (float)Math.Atan((after - before) / curve * _halfSlotTangent);
+        offset = MathF.Atan((after - before) / curve * _halfSlotTangent);
 
         if (_danger.GetValue(previous) <= maximumDanger && _danger.GetValue(next) <= maximumDanger)
         {
-            amplitude = curve * 0.5f / ((float)Math.Cos(offset) * _slotCurvature);
+            amplitude = curve * 0.5f / (MathF.Cos(offset) * _slotCurvature);
         }
     }
 

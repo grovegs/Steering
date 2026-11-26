@@ -24,7 +24,7 @@ public sealed class ContextMap
         for (var i = 0; i < count; i++)
         {
             var angle = i * MathF.PI * 2f / count;
-            _slots[i] = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+            _slots[i] = new Vector2(MathF.Cos(angle), MathF.Sin(angle));
         }
     }
 

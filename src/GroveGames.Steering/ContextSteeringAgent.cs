@@ -74,7 +74,7 @@ public sealed class ContextSteeringAgent
         _hasUsedInterest = false;
         _hasCandidateInterest = false;
         var halfLife = _steering.InterestHalfLife;
-        _blendWeight = halfLife > 0f ? (float)Math.Pow(0.5f, Math.Max(0f, deltaTime) / halfLife) : 0f;
+        _blendWeight = halfLife > 0f ? MathF.Pow(0.5f, Math.Max(0f, deltaTime) / halfLife) : 0f;
     }
 
     public void Reset()

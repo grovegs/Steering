@@ -5,9 +5,16 @@ namespace GroveGames.Steering;
 
 public sealed class AvoidBehaviour : IContextBehaviour
 {
-    private Vector2[] _obstacles = Array.Empty<Vector2>();
+    private Vector2[] _obstacles;
     private int _count;
     private float _radius;
+
+    public AvoidBehaviour()
+    {
+        _obstacles = Array.Empty<Vector2>();
+        _count = 0;
+        _radius = 0f;
+    }
 
     public void SetObstacles(Vector2[] obstacles, int count, float radius)
     {
