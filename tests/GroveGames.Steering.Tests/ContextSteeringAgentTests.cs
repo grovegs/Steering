@@ -24,6 +24,34 @@ public sealed class ContextSteeringAgentTests
     }
 
     [Fact]
+    public void Constructor_NegativeId_Throws()
+    {
+        var behaviours = new IContextBehaviour[] { _seek };
+
+        var exception = Record.Exception(() => new ContextSteeringAgent(-1, _steering, behaviours));
+
+        Assert.IsType<ArgumentOutOfRangeException>(exception);
+    }
+
+    [Fact]
+    public void Constructor_NullSteering_Throws()
+    {
+        var behaviours = new IContextBehaviour[] { _seek };
+
+        var exception = Record.Exception(() => new ContextSteeringAgent(AgentId, null!, behaviours));
+
+        Assert.IsType<ArgumentNullException>(exception);
+    }
+
+    [Fact]
+    public void Constructor_NullBehaviours_Throws()
+    {
+        var exception = Record.Exception(() => new ContextSteeringAgent(AgentId, _steering, null!));
+
+        Assert.IsType<ArgumentNullException>(exception);
+    }
+
+    [Fact]
     public void SelectDirection_SeekOnly_ReturnsTheSeekDirection()
     {
         _seek.SetDirection(Vector2.UnitY, 1f);

@@ -7,8 +7,9 @@ description: Rules for moving agents with context steering in game code with Gro
 
 Rules for game code that uses this package. They hold in every game. The API is in the package's `README.md`.
 
-- One `IContextSteering` is shared by all agents. Create one `ContextSteeringAgent` per moving thing, with its own behaviour instances, and reuse it when the thing is pooled; call `Reset` when it is reused.
+- One `IContextSteering` is shared by all agents. Create one `ContextSteeringAgent` per moving thing, with its own behaviour instances, and reuse it when the thing is pooled; call `Reset` when it is reused. Give agents small ids counted from 0, one per agent; the id indexes the snapshot list.
 - Every frame, for every agent: set the behaviours, call `SelectDirection`, call `Commit` only if the agent really moves that way, and call `CompleteFrame` once at the end of the frame. Skipping `CompleteFrame` freezes the blending.
+- Call `GetInterest` right after the same agent's `SelectDirection`; it reads the shared maps, which the next agent overwrites.
 - `SelectDirection` can return zero. Treat zero as "stay", never normalize it.
 - Interest says where the agent wants to go; danger says where it must not. Never encode avoidance as negative interest.
 - Reuse the obstacle array given to `AvoidBehaviour.SetObstacles`. Fill it and pass the count; never allocate one per frame.
