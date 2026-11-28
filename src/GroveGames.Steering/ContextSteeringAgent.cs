@@ -18,6 +18,10 @@ public sealed class ContextSteeringAgent
 
     public ContextSteeringAgent(int id, IContextSteering steering, IContextBehaviour[] behaviours)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentNullException.ThrowIfNull(steering);
+        ArgumentNullException.ThrowIfNull(behaviours);
+
         _id = id;
         _steering = steering;
         _behaviours = behaviours;

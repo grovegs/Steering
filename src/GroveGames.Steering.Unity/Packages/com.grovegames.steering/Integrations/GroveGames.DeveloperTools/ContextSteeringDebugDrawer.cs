@@ -52,6 +52,11 @@ namespace GroveGames.Steering.Unity
                 return;
             }
 
+            if (_renderer == null)
+            {
+                Create();
+            }
+
             var snapshots = _steering.Snapshots;
             _vertices.Clear();
             _colors.Clear();
