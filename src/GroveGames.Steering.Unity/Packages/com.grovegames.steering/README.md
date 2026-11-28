@@ -50,6 +50,8 @@ agent.CompleteFrame(deltaTime);
 - Call `Commit` when the agent really moves in the selected direction, and `CompleteFrame` once per frame for every agent. Only committed interest is blended into the next frame.
 - While `SetRecording(true)` is on, each agent fills its `ContextSteeringSnapshot`. Whoever draws a snapshot checks `IsRecorded` and calls `Clear()` afterwards, so a decision is drawn once.
 - `Reset` forgets the blended interest, for an agent that is reused.
+- An agent's id indexes the snapshot list, so give agents small ids counted from 0, one per agent.
+- `GetInterest` reads the shared maps, so it answers for the agent that called `SelectDirection` last. Call it right after the same agent's `SelectDirection`.
 
 ## Unity
 
